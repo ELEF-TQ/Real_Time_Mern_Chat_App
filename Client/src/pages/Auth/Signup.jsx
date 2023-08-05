@@ -6,7 +6,6 @@ import { useToast } from "@chakra-ui/toast";
 import { useState } from "react";
 import api from '../../api';
 
-
 const Signup = () => {
   const [show, setShow] = useState(false);
   const toggleShow = () => setShow((prevShow) => !prevShow);
@@ -18,6 +17,7 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
+  const [pic, setPic] = useState(null); // New state to store the selected image file
   const [picLoading, setPicLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -26,7 +26,8 @@ const Signup = () => {
   };
 
   const handlePicUpload = (e) => {
-    // Handle picture upload here
+    const file = e.target.files[0];
+    setPic(file);
   };
 
   const handleSignup = async () => {
@@ -46,11 +47,14 @@ const Signup = () => {
         return;
       }
 
-      await api.post('/signup', {
-        name,
-        email,
-        password,
-      });
+      // Create a FormData object to send the file along with the other form data
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", name);
+      formDataToSend.append("email", email);
+      formDataToSend.append("password", password);
+      formDataToSend.append("pic", pic); // Append the selected image file to the FormData
+
+      await api.post('/signup', formDataToSend);
 
       setPicLoading(false);
 
@@ -60,11 +64,12 @@ const Signup = () => {
         password: "",
         confirmPassword: "",
       });
+      setPic(null); // Reset the selected image file after successful signup
 
-      toast({title: "Signup successful",status: "success",duration: 3000,isClosable: true,});
+      toast({ title: "Signup successful", status: "success", duration: 3000, isClosable: true });
     } catch (error) {
       setPicLoading(false);
-      toast({title: "Signup failed",description: "An error occurred during signup.",status: "error",duration: 3000,isClosable: true,});
+      toast({ title: "Signup failed", description: "An error occurred during signup.", status: "error", duration: 3000, isClosable: true });
     }
   };
 
