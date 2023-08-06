@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-
+const uri = "mongodb+srv://admin:admin@chatapp.ktbpofq.mongodb.net/?retryWrites=true&w=majority&ssl=true";
 const connectDB = async () => {
   try {
-    const connect = await mongoose.connect(process.env.MONGO_URI, {
+    const connect = await mongoose.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

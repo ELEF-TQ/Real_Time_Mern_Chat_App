@@ -4,7 +4,7 @@ import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { VStack } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
 import { useState } from "react";
-import api from '../../api';
+import api from "../../api";
 
 const Signup = () => {
   const [show, setShow] = useState(false);
@@ -17,7 +17,7 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
-  const [pic, setPic] = useState(null); // New state to store the selected image file
+  const [pic, setPic] = useState("");
   const [picLoading, setPicLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -25,15 +25,56 @@ const Signup = () => {
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
 
-  const handlePicUpload = (e) => {
-    const file = e.target.files[0];
-    setPic(file);
+  const handlePicUpload = async (e) => {
+    setPicLoading(true);
+    const pics = e.target.files[0];
+
+    if (!pics) {
+      toast({
+        title: "Please select an image",
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+      });
+      setPicLoading(false);
+      return;
+    }
+
+    if (pics.type !== "image/jpeg" && pics.type !== "image/png") {
+      toast({
+        title: "Please select a valid image (JPEG or PNG)",
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+      });
+      setPicLoading(false);
+      return;
+    }
+
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(pics);
+      reader.onloadend = () => {
+        const base64data = reader.result.split(",")[1]; // Extract base64-encoded string
+        setPic(base64data);
+        setPicLoading(false);
+      };
+    } catch (error) {
+      setPicLoading(false);
+      toast({
+        title: "Image upload failed",
+        description: "An error occurred during image upload.",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleSignup = async () => {
+   
     try {
       setPicLoading(true);
-
       const { name, email, password, confirmPassword } = formData;
 
       if (password !== confirmPassword) {
@@ -47,29 +88,25 @@ const Signup = () => {
         return;
       }
 
-      // Create a FormData object to send the file along with the other form data
       const formDataToSend = new FormData();
       formDataToSend.append("name", name);
       formDataToSend.append("email", email);
       formDataToSend.append("password", password);
-      formDataToSend.append("pic", pic); // Append the selected image file to the FormData
+      formDataToSend.append("pic", pic);
 
-      await api.post('/signup', formDataToSend);
+      await api.post("/user/signup", formDataToSend);
 
       setPicLoading(false);
 
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
+      setFormData({name: "",email: "",password: "",confirmPassword: "",});
+      setPic("");
+      toast({title: "Signup successful",status: "success",duration: 3000,isClosable: true,
       });
-      setPic(null); // Reset the selected image file after successful signup
-
-      toast({ title: "Signup successful", status: "success", duration: 3000, isClosable: true });
+    
     } catch (error) {
       setPicLoading(false);
-      toast({ title: "Signup failed", description: "An error occurred during signup.", status: "error", duration: 3000, isClosable: true });
+      toast({title: "Signup failed",description: "An error occurred during signup.",status: "error",duration: 3000,isClosable: true,
+      });
     }
   };
 

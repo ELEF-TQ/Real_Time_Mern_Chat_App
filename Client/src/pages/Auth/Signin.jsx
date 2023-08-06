@@ -1,10 +1,15 @@
-import { Button } from "@chakra-ui/button";
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-import { VStack } from "@chakra-ui/layout";
-import { useState } from "react";
+import React, { useState } from "react";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
+  VStack,
+} from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
-import api from '../../api';
+import api from "../../api";
 
 const Signin = () => {
   const [show, setShow] = useState(false);
@@ -16,26 +21,50 @@ const Signin = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      await api.post('/signin', formData);
+      await api.post("/user/signin", formData);
       setLoading(false);
-      toast({title: "Login successful",status: "success",duration: 3000,isClosable: true,
+      toast({
+        title: "Login successful",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
       });
     } catch (error) {
       setLoading(false);
-      toast({title: "Login failed",description: "Invalid email or password.",status: "error",duration: 3000,isClosable: true,});
+      toast({
+        title: "Login failed",
+        description: "Invalid email or password.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
   const handleGetGuestUserCredentials = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/guestUser');
+      const response = await api.get("/user/guest");
       setLoading(false);
       const { username, password } = response.data;
-      toast({title: "Guest user credentials",description: `Username: ${username}, Password: ${password}`,status: "info",duration: 5000,isClosable: true,});
+
+      setFormData({ email: username, password: password });
+
+      toast({
+        title: "Guest user credentials",
+        description: `Username: ${username}, Password: ${password}`,
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+      });
     } catch (error) {
       setLoading(false);
-      toast({title: "Failed to get guest user credentials",status: "error",duration: 3000,isClosable: true,});
+      toast({
+        title: "Failed to get guest user credentials",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -47,7 +76,9 @@ const Signin = () => {
           value={formData.email}
           type="email"
           placeholder="Enter Your Email Address"
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, email: e.target.value })
+          }
         />
       </FormControl>
       <FormControl id="password" isRequired>
@@ -57,7 +88,9 @@ const Signin = () => {
             value={formData.password}
             type={show ? "text" : "password"}
             placeholder="Enter password"
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
           />
           <InputRightElement width="4.5rem">
             <Button h="1.75rem" size="sm" onClick={toggleShow}>
