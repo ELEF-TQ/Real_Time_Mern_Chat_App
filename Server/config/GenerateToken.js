@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const GenerateToken = (id) => {
 
-  const secretKey = 'ELEF_TQ';
+  const secretKey = process.env.JWT_SECRET;
   const payload = {userId: id,};
   const options = {expiresIn: '1h'};
 
