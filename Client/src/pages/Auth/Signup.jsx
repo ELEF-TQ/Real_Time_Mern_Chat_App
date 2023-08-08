@@ -1,13 +1,19 @@
-import { Button } from "@chakra-ui/button";
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-import { VStack } from "@chakra-ui/layout";
-import { useToast } from "@chakra-ui/toast";
-import { useState } from "react";
+import React, { useState } from "react";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
+  VStack,
+  useToast,
+} from "@chakra-ui/react";
+import axios from "axios";
 import api from "../../api";
-
 const Signup = () => {
   const [show, setShow] = useState(false);
+  const [imageUploadComplete, setImageUploadComplete] = useState(false);
   const toggleShow = () => setShow((prevShow) => !prevShow);
   const toast = useToast();
 
@@ -28,7 +34,6 @@ const Signup = () => {
   const handlePicUpload = async (e) => {
     setPicLoading(true);
     const pics = e.target.files[0];
-
     if (!pics) {
       toast({
         title: "Please select an image",
@@ -55,9 +60,10 @@ const Signup = () => {
       const reader = new FileReader();
       reader.readAsDataURL(pics);
       reader.onloadend = () => {
-        const base64data = reader.result.split(",")[1]; // Extract base64-encoded string
+        const base64data = reader.result.split(",")[1];
         setPic(base64data);
         setPicLoading(false);
+        setImageUploadComplete(true); // Set the flag to indicate image upload is complete
       };
     } catch (error) {
       setPicLoading(false);
@@ -72,7 +78,6 @@ const Signup = () => {
   };
 
   const handleSignup = async () => {
-   
     try {
       setPicLoading(true);
       const { name, email, password, confirmPassword } = formData;
@@ -88,24 +93,33 @@ const Signup = () => {
         return;
       }
 
-      const formDataToSend = new FormData();
-      formDataToSend.append("name", name);
-      formDataToSend.append("email", email);
-      formDataToSend.append("password", password);
-      formDataToSend.append("pic", pic);
 
-      await api.post("/user/signup", formDataToSend);
-
+      await api.post("/signup", {name ,email ,password,pic});
       setPicLoading(false);
 
-      setFormData({name: "",email: "",password: "",confirmPassword: "",});
-      setPic("");
-      toast({title: "Signup successful",status: "success",duration: 3000,isClosable: true,
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
       });
-    
+      setPic("");
+      setImageUploadComplete(false); // Reset the flag after signup
+      toast({
+        title: "Signup successful",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       setPicLoading(false);
-      toast({title: "Signup failed",description: "An error occurred during signup.",status: "error",duration: 3000,isClosable: true,
+      console.log(error);
+      toast({
+        title: "Signup failed",
+        description: "An error occurred during signup.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
       });
     }
   };
@@ -180,6 +194,7 @@ const Signup = () => {
         style={{ marginTop: 15 }}
         isLoading={picLoading}
         onClick={handleSignup}
+        disabled={!imageUploadComplete} // Disable the button if image upload is not complete
       >
         Sign Up
       </Button>

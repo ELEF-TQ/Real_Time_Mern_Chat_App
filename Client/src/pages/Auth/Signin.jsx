@@ -21,7 +21,7 @@ const Signin = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      await api.post("/user/signin", formData);
+      await api.post("/signin", formData);
       setLoading(false);
       toast({
         title: "Login successful",
@@ -44,7 +44,7 @@ const Signin = () => {
   const handleGetGuestUserCredentials = async () => {
     setLoading(true);
     try {
-      const response = await api.get("/user/guest");
+      const response = await api.get("/guest");
       setLoading(false);
       const { username, password } = response.data;
 
