@@ -12,13 +12,21 @@ const AuthProtect = asyncHandler(async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
 
-
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      // console.log("Decoded token:", decoded);
 
-      req.user = await User.findById(decoded.id).select("-password");
+      try {
+        req.user = await User.findById(decoded.userId).select("-password");
+        // console.log("req.user:", req.user);
+      } catch (error) {
+        console.error("User findById error:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+      }
+      
 
       next();
     } catch (error) {
+      console.error("Token verification error:", error);
       res.status(401);
       throw new Error("Not authorized, token failed");
     }

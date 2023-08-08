@@ -18,7 +18,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
     res.send(users);
   } catch (error) {
     console.error('Error in getAllUsers:', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send(`Internal Server Error: ${error.message}`);
+
   }
 });
 
