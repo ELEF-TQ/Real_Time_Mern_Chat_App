@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const USER = require('../models/userModel');
 
+//_________ getAllUsers : 
 const getAllUsers = asyncHandler(async (req, res) => {
   try {
     if (!req.user) {
@@ -23,4 +24,6 @@ const getAllUsers = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { getAllUsers };
+module.exports = { 
+  getAllUsers 
+};

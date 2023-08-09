@@ -10,10 +10,18 @@ import {
   } from "@chakra-ui/react";
   import { useEffect } from "react";
   
-  import Signin from "./Auth/Signin";
-  import Signup from "./Auth/Signup";
+  import Signin from "../components/Auth/Signin";
+  import Signup from "../components/Auth/Signup";
   import '../App.css'
   function Home() {
+
+    useEffect(()=> {
+      const userInfo =  JSON.parse((localStorage.getItem("userInfo")))
+      if(userInfo){
+          <Navigate to='/Chat'/>
+      }
+    },[]);
+
 
   
     useEffect(() => {
