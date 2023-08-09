@@ -2,6 +2,8 @@ const asyncHandler = require('express-async-handler');
 const USER = require('../models/userModel');
 const GenerateToken = require('../config/GenerateToken');
 
+
+//_________ SignIn : 
 const SignIn = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -20,9 +22,9 @@ const SignIn = asyncHandler(async (req, res, next) => {
       picture: user.picture,
       token: GenerateToken(user._id),
     });
-  });
+});
 
-
+//_________ Signup : 
 const SignUp = asyncHandler(async (req, res, next) => {
     const { name, email, password, picture } = req.body;
     if (!name || !email || !password) {
@@ -59,12 +61,10 @@ const SignUp = asyncHandler(async (req, res, next) => {
       res.status(401);
       throw new Error("Failed to create user");
     }
-  });
+});
   
-  
-  
-
- const GuestUserCredentials = async (req, res) => {
+//_________ GuestUserCredentials : 
+const GuestUserCredentials = async (req, res) => {
     try {
       const guestUser = {
         username: "guest@example.com",
@@ -76,6 +76,10 @@ const SignUp = asyncHandler(async (req, res, next) => {
       console.error("Error fetching guest user data:", error);
       res.status(500).json({ error: "Failed to get guest user data" });
     }
-  };
+};
   
-module.exports ={SignUp,SignIn,GuestUserCredentials}
+module.exports ={
+  SignUp, 
+  SignIn,
+  GuestUserCredentials
+}

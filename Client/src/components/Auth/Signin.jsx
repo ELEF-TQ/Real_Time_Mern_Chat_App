@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import api from "../../api";
-
+import {Navigate} from 'react-router-dom'
 const Signin = () => {
   const [show, setShow] = useState(false);
   const toggleShow = () => setShow((prevShow) => !prevShow);
@@ -23,21 +23,11 @@ const Signin = () => {
     try {
       await api.post("/signin", formData);
       setLoading(false);
-      toast({
-        title: "Login successful",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+      toast({title: "Login successful",status: "success",duration: 3000,isClosable: true});
+      <Navigate to='Chat'/>
     } catch (error) {
       setLoading(false);
-      toast({
-        title: "Login failed",
-        description: "Invalid email or password.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      toast({title: "Login failed",description: "Invalid email or password.",status: "error",duration: 3000,isClosable: true});
     }
   };
 
