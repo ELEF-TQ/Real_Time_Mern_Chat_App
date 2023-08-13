@@ -1,18 +1,21 @@
 import { createContext , useContext , useState , useEffect} from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from "cookies-js";
 const ChatContext = createContext();
+
 
 const ChatProvider = ({children})=> {
 
     const navigate = useNavigate()
     const [user , setUser] = useState(null);
     const [chat , setChat] = useState(null);
-    const [chats , setChats] = useState(null);
+    const [chats , setChats] = useState([]);
     useEffect(()=> {
         const userInfo =  JSON.parse((localStorage.getItem("userInfo")))
+        const jwt = Cookies.get("jwt");
         setUser(userInfo);
         
-        if(!userInfo){
+        if(!userInfo || !jwt){
             navigate('/'); 
         }
     },[]);

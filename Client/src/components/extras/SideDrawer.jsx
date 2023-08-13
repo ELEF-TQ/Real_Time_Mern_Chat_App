@@ -72,7 +72,8 @@ function SideDrawer() {
       if(!chats.find((c)=>c._id === data._id)) setChats([data,...chats])
       setChat(data)
       setLoadingChat(false)
-      onClose();
+      console.log(chat)
+      // onClose();
     } catch (error) {
       toast({title: error.message,status: "error",duration: 3000,isClosable: true,});
     }
@@ -154,7 +155,8 @@ function SideDrawer() {
                   />
                 ))
               )}
-              {loadingChat && <Spinner ml='auto' d='flex' />}
+            {loadingChat && <Spinner ml='auto'  />}
+
           </DrawerBody>
         </DrawerContent>
       </Drawer>
