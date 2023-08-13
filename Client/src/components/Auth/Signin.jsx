@@ -10,7 +10,8 @@ import {
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import api from "../../api";
-import {Navigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import Cookies from "cookies-js";
 const Signin = () => {
   const [show, setShow] = useState(false);
   const toggleShow = () => setShow((prevShow) => !prevShow);
@@ -18,18 +19,29 @@ const Signin = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
 
-  const handleLogin = async () => {
+  const navigate = useNavigate(); // Initialize useNavigate
+
+const handleLogin = async () => {
     setLoading(true);
     try {
-      await api.post("/signin", formData);
+      const response = await api.post("/signin", formData);
+      console.log(response.data);
+      localStorage.setItem("userInfo", JSON.stringify(response.data)); 
+      Cookies.set("jwt", response.data.token);
       setLoading(false);
-      toast({title: "Login successful",status: "success",duration: 3000,isClosable: true});
-      <Navigate to='Chat'/>
+      toast({
+        title: "Login successful",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      navigate('/Chat'); 
     } catch (error) {
       setLoading(false);
-      toast({title: "Login failed",description: "Invalid email or password.",status: "error",duration: 3000,isClosable: true});
+      toast({title: "Login failed",description: "Invalid email or password.",status: "error",duration: 3000,isClosable: true,});
     }
   };
+
 
   const handleGetGuestUserCredentials = async () => {
     setLoading(true);

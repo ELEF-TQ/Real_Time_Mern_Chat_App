@@ -13,23 +13,19 @@ import {
   import Signin from "../components/Auth/Signin";
   import Signup from "../components/Auth/Signup";
   import '../App.css'
+  import { useNavigate } from "react-router-dom";
   function Home() {
+    const navigate = useNavigate(); 
+
 
     useEffect(()=> {
       const userInfo =  JSON.parse((localStorage.getItem("userInfo")))
       if(userInfo){
-          <Navigate to='/Chat'/>
+        navigate('/Chat'); 
       }
     },[]);
 
 
-  
-    useEffect(() => {
-      const user = JSON.parse(localStorage.getItem("userInfo"));
-  
-      if (user) history.push("/chats");
-    }, []);
-  
     return (
       <Container maxW="xl" centerContent className="Home__Container">
         <Box
