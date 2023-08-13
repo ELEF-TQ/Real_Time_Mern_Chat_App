@@ -23,7 +23,7 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
-  const [pic, setPic] = useState("");
+  const [picture, setPic] = useState("");
   const [picLoading, setPicLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -93,8 +93,8 @@ const Signup = () => {
         return;
       }
 
-
-      await api.post("/signup", {name ,email ,password,pic});
+      const DataToSend = {name ,email ,password,picture}
+      await api.post("/signup", DataToSend);
       setPicLoading(false);
 
       setFormData({

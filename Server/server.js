@@ -7,7 +7,13 @@ const errorHandler = require('./middlewares/errorHandler');
 require('dotenv').config();
 
 //______Libraries :
-app.use(cors());
+app.use(
+    cors({
+      origin: "http://localhost:5173", 
+      credentials: true, 
+    })
+  );
+  
 app.use(express.json());
 app.use(errorHandler);
 app.use(bodyParser.urlencoded({ extended: false }));
