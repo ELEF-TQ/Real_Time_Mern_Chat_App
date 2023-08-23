@@ -70,3 +70,10 @@ button {
 .css-1lklepc {
   padding: 0;
 }
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}

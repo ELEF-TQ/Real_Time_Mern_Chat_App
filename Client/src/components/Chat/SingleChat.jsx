@@ -1,12 +1,58 @@
-import { Flex , IconButton, Text } from "@chakra-ui/react";
+import { Flex , FormControl, IconButton, Input, Spinner, Text } from "@chakra-ui/react";
 import { ChatState } from "../../context/ChatProvider";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import UpdateGroupChatModal from "../Modals/UpdateGroupChatModal";
 import { getSender ,getFullSender } from "../../config/ChatLogics";
 import ProfileModal from "../Modals/ProfileModal";
+import { useEffect, useState } from "react";
+import { useToast } from "@chakra-ui/toast";
+import api from "../../api"; 
+import ScrollableChat from './ScrollableChat'
 const SingleChat = ({ setFetchAgain,fetchAgain}) => {
-  
-const {user , chat , setChat} = ChatState()
+
+  const {user , chat , setChat} = ChatState()
+
+  const toast = useToast();
+  const [messages , setMessages] = useState([]);
+  const [loading , setLoading] = useState(false);
+  const [newMessage , setNewMessage] = useState("");
+
+  const sendMessage = async (e) => {
+    if(e.key === "Enter" && newMessage) {
+      try {
+        setNewMessage(" "); 
+        const {data} = await api.post('/message' , {
+          content : newMessage ,
+          chatId : chat._id
+        })
+        setMessages([...messages , data]);
+      } catch (error) {
+        toast({title:error.message,status: "error",duration: 5000,isClosable: true,position: "bottom-left"});
+      }
+    }
+  };
+
+  const fetchMessages = async () => {
+    if(!chat) return;
+    try {
+      setLoading(true);
+      const {data} = await api.get(`/message/${chat._id}`)
+      setMessages(data);
+      setLoading(false);
+      console.log('messages' + data)
+    } catch (error) {
+      toast({title:error.message,status: "error",duration: 5000,isClosable: true,position: "bottom-left"});
+    }
+  }
+
+  const typingHandler = (e) => {
+    setNewMessage(e.target.value);
+    //typing indicator
+  };
+
+  useEffect(()=> {
+    fetchMessages();
+  },[chat]);
 
   return (
     <>
@@ -40,6 +86,7 @@ const {user , chat , setChat} = ChatState()
           <UpdateGroupChatModal
             fetchAgain={fetchAgain}
             setFetchAgain={setFetchAgain}
+            fetchMessages={fetchMessages}
           />
           </>
         )}
@@ -54,8 +101,28 @@ const {user , chat , setChat} = ChatState()
          w='100%'
          h='90%'
         >
+          {loading ? (
+            <Spinner alignSelf='center' margin='auto' w={20} h={20} size='xl'/>
+          ):(
+            <Flex flexDir='column'>
+              <div className='messages'>
+                <ScrollableChat
+                 messages={messages}
+                
+                />
 
-
+              </div>
+            </Flex>
+          )}
+            <FormControl onKeyDown={sendMessage} isRequired mt={3}>
+                <Input 
+                  variant='filled' 
+                  bg='#E0E0E0'
+                  placeholder="Enter your message here..."
+                  onChange={typingHandler}
+                  value={newMessage}
+                />
+            </FormControl>
         </Flex>
        </>
      ) : (
