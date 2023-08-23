@@ -105,6 +105,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
 
       userToRemove._id === user._id ? setChat() : setChat(data)
       setFetchAgain(!fetchAgain);
+      fetchMessages();
       setLoading(false);
       toast({title:"Good job!",status: "success",duration: 5000,isClosable: true,position: "bottom"});
 

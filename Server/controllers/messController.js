@@ -44,8 +44,9 @@ const sendMessage = asyncHandler(async(req,res)=> {
 const getAllMessages = asyncHandler(async(req,res)=> { 
     try {
         const messages = await MESSAGE.find({chat : req.params.chatId })
-        .populate( "sender" , "name pic email").populate( "chat" );
+        .populate( "sender" , "name pic email").populate("chat");
         res.json(messages);
+        
 
     } catch (error) {
         res.status(400);
