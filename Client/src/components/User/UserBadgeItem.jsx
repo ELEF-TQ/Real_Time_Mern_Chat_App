@@ -18,6 +18,7 @@ const UserBadgeItem = ({ user, handleFunction, admin }) => {
       {user.name}
       {admin === user._id && <span> (Admin)</span>}
       <CloseIcon pl={1} />
+      {console.log('here')}
     </Badge>
   );
 };

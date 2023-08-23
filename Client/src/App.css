@@ -55,9 +55,6 @@ button {
 }
 
 
-
-
-
 ::-webkit-scrollbar {
   width: 0px;
 }
@@ -69,4 +66,7 @@ button {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+.css-1lklepc {
+  padding: 0;
 }

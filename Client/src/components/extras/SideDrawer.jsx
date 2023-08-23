@@ -151,7 +151,7 @@ function SideDrawer() {
                   <UserListItem
                     key={user._id}
                     user={user}
-                    AccessChatHandler={() => AccessChatHandler(user._id)}
+                    handleFunction={() => AccessChatHandler(user._id)}
                   />
                 ))
               )}

@@ -19,7 +19,6 @@ const MyChats = ({ fetchAgain }) => {
     try {
       const {data} = await api.get("/chat");
       setChats(data);
-      console.log(data);
     } catch (error) {
       toast({title:error.message,description: "Failed to Load the chats",status: "error",duration: 5000,isClosable: true,position: "bottom-left",});
     }
@@ -85,7 +84,7 @@ const MyChats = ({ fetchAgain }) => {
             borderRadius="lg"
             key={c._id}
             >
-              <Text fontSize='20px'>
+              <Text fontSize='20px' >
                 {!c.isGroupChat
                   ? getSender(loggedUser, c.users)
                   : c.chatName}
