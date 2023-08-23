@@ -1,11 +1,10 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Flex, Box,Text } from "@chakra-ui/layout";
 
-const UserListItem = ({ user, AccessChatHandler }) => {
-  console.log(user);
+const UserListItem = ({ user,  handleFunction }) => {
   return (
     <Flex
-      onClick={AccessChatHandler}
+      onClick={handleFunction}
       cursor="pointer"
       bg="#E8E8E8"
       _hover={{

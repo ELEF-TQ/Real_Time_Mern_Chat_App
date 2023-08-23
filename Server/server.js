@@ -19,10 +19,10 @@ app.use(errorHandler);
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //______importing routes :
-const userRoutes =  require('./routes/userRoutes');
+const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require('./routes/chatRoutes');
-
+const messRoutes = require('./routes/messRoutes');
 
 
 //______Database connection :
@@ -37,6 +37,7 @@ connectDB().then(() => {
 app.use('/api',authRoutes);
 app.use('/api/user',userRoutes);
 app.use('/api/chat',chatRoutes);
+app.use('/api/message',messRoutes);
 
 
 
