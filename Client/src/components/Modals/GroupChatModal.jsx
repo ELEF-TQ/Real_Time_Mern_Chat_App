@@ -56,11 +56,13 @@ import {
     }
 
     const handleSubmit = async () => {
+      console.log('submit1')
       if(!groupChatName || !selectedUsers) {
         toast({title:'All filed are required',status: "warning",duration: 5000,isClosable: true,position: "top",});
         return;
       }
       try {
+
         const {data} = await api.post('/chat/group' , {
           name : groupChatName,
           users : JSON.stringify(selectedUsers.map((u)=>u._id))

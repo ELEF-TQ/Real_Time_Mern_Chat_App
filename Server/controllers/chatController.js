@@ -69,7 +69,7 @@ const GetChats = asyncHandler(async(req,res)=> {
 
 //_________ CreateGroup : 
 const CreateGroup = asyncHandler(async(req,res)=> {
-    if(!req.body.users || !req.body.name) {return res.status(400).send({message: "All fields are required"})}
+  if(!req.body.users || !req.body.name) {return res.status(400).send({message: "All fields are required"})}
     var users = JSON.parse(req.body.users);
     
     if(users.length < 2){res.status(400).send("more than two user");}
