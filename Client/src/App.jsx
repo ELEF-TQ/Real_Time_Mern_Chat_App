@@ -3,7 +3,11 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import ChatPage from './pages/ChatPage';
 
+
+
 function App() {
+
+
   return (
     <div className='App'>
       <Routes>

@@ -18,4 +18,25 @@ api.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
+
+let showTokenExpirationModalCallback;
+export const registerTokenExpirationCallback = (callback) => {
+  showTokenExpirationModalCallback = callback;
+};
+
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      if (showTokenExpirationModalCallback) {
+        showTokenExpirationModalCallback();
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+
+
 export default api;
