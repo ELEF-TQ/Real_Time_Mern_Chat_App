@@ -56,26 +56,36 @@ import {
     }
 
     const handleSubmit = async () => {
-      console.log('submit1')
-      if(!groupChatName || !selectedUsers) {
-        toast({title:'All filed are required',status: "warning",duration: 5000,isClosable: true,position: "top",});
-        return;
-      }
       try {
-
-        const {data} = await api.post('/chat/group' , {
-          name : groupChatName,
-          users : JSON.stringify(selectedUsers.map((u)=>u._id))
-        })
-        setChats([data , ...chats]);
-        toast({title:'New Group Chat Created !',status: "success",duration: 5000,isClosable: true,position: "top",});
-        onClose();
+        if (!groupChatName || !selectedUsers) {
+          toast({ title: 'All filed are required', status: 'warning', duration: 5000, isClosable: true, position: 'top' });
+          return;
+        }
+        
+        try {
+          const { data } = await api.post('/chat/group', {
+            name: groupChatName,
+            users: JSON.stringify(selectedUsers.map((u) => u._id)),
+          });
+          console.log('API response:', data);
+          
+          console.log('API request successful');
+          console.log('created');
+          setChats([data, ...chats]);
+          toast({ title: 'New Group Chat Created !', status: 'success', duration: 5000, isClosable: true, position: 'top' });
+          onClose();
+        } catch (error) {
+          console.error('Error caught:', error);
+          toast({ title: 'Failed', description: error.response.data, status: 'error', duration: 5000, isClosable: true, position: 'top' });
+        }
+        
+        console.log('End of handleSubmit');
       } catch (error) {
-        toast({title:'Failed',description:error.response.data ,status: "error",duration: 5000,isClosable: true,position: "top"});
-
+        // Handle any unexpected errors here.
+        console.error('Unexpected error caught:', error);
       }
     }
-
+    
 
     return (
       <>

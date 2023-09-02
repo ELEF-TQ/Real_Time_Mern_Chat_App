@@ -68,45 +68,59 @@ const GetChats = asyncHandler(async(req,res)=> {
 });
 
 //_________ CreateGroup : 
-const CreateGroup = asyncHandler(async(req,res)=> {
-  if(!req.body.users || !req.body.name) {return res.status(400).send({message: "All fields are required"})}
-    var users = JSON.parse(req.body.users);
-    
-    if(users.length < 2){res.status(400).send("more than two user");}
+const CreateGroup = asyncHandler(async (req, res) => {
+  if (!req.body.users || !req.body.name) {
+    return res.status(400).send({ message: "All fields are required" });
+  }
+  
+  var users = JSON.parse(req.body.users);
 
-    users.push(req.user);
+  if (users.length < 2) {
+    return res.status(400).send("More than two users are required");
+  }
 
-    try {
-      const GroupChat = await CHAT.create({
-        chatName: req.body.name,
-        users: users,
-        isGroupChat: true,
-        groupAdmin: req.user 
-      })
-      const FullGroupChat = await CHAT.findOne({_id:GroupChat._id})
-        .populate("users" , "-password")
-        .populate("groupAdmin" ,"-password");
-    
-    } catch (error) {
-       res.send( error.message );
-    }
+  users.push(req.user);
+
+  try {
+    const GroupChat = await CHAT.create({
+      chatName: req.body.name,
+      users: users,
+      isGroupChat: true,
+      groupAdmin: req.user,
+    });
+
+    const FullGroupChat = await CHAT.findOne({ _id: GroupChat._id })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+    res.status(200).json(FullGroupChat);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
+
 
 //_________ RenameGroup : 
-const RenameGroup = asyncHandler(async(req,res)=> {
-   const {chatId , chatName} = req.body;
-   const updatedChat = await CHAT.findByIdAndUpdate(chatId,{chatName : chatName} , {new : true})
-   .populate("users","-password")
-   .populate("groupAdmin","-password")
+const RenameGroup = async (req, res, next) => {
+  try {
+    const { chatId, chatName } = req.body;
+    const updatedChat = await CHAT.findByIdAndUpdate(chatId, { chatName: chatName }, { new: true })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
 
-   if(!updatedChat){
-    res.status(404)
-    throw new Error("Chat not found")
-   }else {
-    res.json(updatedChat)
-   }
-   
-});
+    if (!updatedChat) {
+      return res.status(404).json({ message: "Chat not found" });
+    } else {
+      res.json(updatedChat);
+    }
+  } catch (error) {
+    // Pass the error to the error handling middleware (asyncHandler).
+    next(error);
+  }
+};
+
+module.exports = RenameGroup;
+
 
 //_________ RemoveFromGroup : 
 const RemoveFromGroup = asyncHandler(async(req,res)=> {

@@ -17,6 +17,8 @@ const SingleChat = ({ setFetchAgain,fetchAgain}) => {
   const [loading , setLoading] = useState(false);
   const [newMessage , setNewMessage] = useState("");
 
+  console.log( "singlechat" + JSON.stringify(messages) );
+  
   const sendMessage = async (e) => {
     if(e.key === "Enter" && newMessage) {
       try {
