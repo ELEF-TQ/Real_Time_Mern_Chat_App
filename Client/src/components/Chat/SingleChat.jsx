@@ -8,9 +8,31 @@ import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/toast";
 import api from "../../api"; 
 import ScrollableChat from './ScrollableChat'
-const SingleChat = ({ setFetchAgain,fetchAgain}) => {
+import io from 'socket.io-client'
 
+const ENDPOINT = "http://localhost:5000";
+var socket , selectedChatCompare;
+
+
+const SingleChat = ({ setFetchAgain,fetchAgain}) => {
   const {user , chat , setChat} = ChatState()
+
+  //____Socket.io :
+  const [socketConnected , setSocketConnected] = useState(false);
+  useEffect(() => {
+    if (!socket) {
+      socket = io(ENDPOINT);
+    }
+    
+    console.log('User data:', user);
+    socket.emit('setup', user);
+
+    socket.on('connected', () => {setSocketConnected(true)});
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
 
   const toast = useToast();
   const [messages , setMessages] = useState([]);
@@ -18,7 +40,7 @@ const SingleChat = ({ setFetchAgain,fetchAgain}) => {
   const [newMessage , setNewMessage] = useState("");
 
   console.log( "singlechat" + JSON.stringify(messages) );
-  
+
   const sendMessage = async (e) => {
     if(e.key === "Enter" && newMessage) {
       try {
