@@ -8,8 +8,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/toast";
 import api from "../../api"; 
 import ScrollableChat from './ScrollableChat'
-import io from 'socket.io-client'
-
+import { io } from "socket.io-client";
 const ENDPOINT = "http://localhost:5000";
 var socket , selectedChatCompare;
 
@@ -19,19 +18,33 @@ const SingleChat = ({ setFetchAgain,fetchAgain}) => {
 
   //____Socket.io :
   const [socketConnected , setSocketConnected] = useState(false);
+
+
   useEffect(() => {
+    console.log("Connecting to socket.io");
     if (!socket) {
       socket = io(ENDPOINT);
+      console.log("Socket created");
     }
-    
-    console.log('User data:', user);
+  
     socket.emit('setup', user);
-
-    socket.on('connected', () => {setSocketConnected(true)});
+    console.log("Sent 'setup' event with user data:", user);
+  
+    socket.on('connected', () => {
+      console.log("Received 'connected' event");
+      setSocketConnected(true);
+    });
+  
+    socket.on('error', (error) => {
+      console.error("Socket.io error:", error);
+    });
+  
     return () => {
       socket.disconnect();
+      console.log("Socket disconnected");
     };
   }, []);
+  
 
 
   const toast = useToast();
@@ -39,7 +52,7 @@ const SingleChat = ({ setFetchAgain,fetchAgain}) => {
   const [loading , setLoading] = useState(false);
   const [newMessage , setNewMessage] = useState("");
 
-  console.log( "singlechat" + JSON.stringify(messages) );
+ 
 
   const sendMessage = async (e) => {
     if(e.key === "Enter" && newMessage) {
@@ -63,7 +76,6 @@ const SingleChat = ({ setFetchAgain,fetchAgain}) => {
       const {data} = await api.get(`/message/${chat._id}`)
       setMessages(data);
       setLoading(false);
-      console.log('messages' + data)
     } catch (error) {
       toast({title:error.message,status: "error",duration: 5000,isClosable: true,position: "bottom-left"});
     }
