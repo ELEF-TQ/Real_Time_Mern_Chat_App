@@ -2,7 +2,7 @@ import { Flex , FormControl, IconButton, Input, Spinner, Text } from "@chakra-ui
 import { ChatState } from "../../context/ChatProvider";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import UpdateGroupChatModal from "../Modals/UpdateGroupChatModal";
-import { getSender ,getFullSender } from "../../config/ChatLogics";
+import { getSender ,getFullSender } from  "../../config/ChatLogics";
 import ProfileModal from "../Modals/ProfileModal";
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/toast";

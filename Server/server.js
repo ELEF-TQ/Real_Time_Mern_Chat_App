@@ -46,8 +46,9 @@ app.use('/api/message',messRoutes);
 //______Socket io handlers :
 
 io.on('connection', (socket) => {
-  console.log('connected to socket.io');
+  // console.log('connected to socket.io');
   socket.on('setup', (userData) => {
+    console.log('here')
     socket.join(userData._id);
     console.log(userData._id);
     socket.emit('connected');
