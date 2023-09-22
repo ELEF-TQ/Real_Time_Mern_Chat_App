@@ -6,8 +6,13 @@ const bodyParser = require('body-parser');
 const errorHandler = require('./middlewares/errorHandler');
 require('dotenv').config();
 const server = require('http').createServer(app); 
-const io = require('socket.io')(server, { pingTimeout: 60000 });
+
 //______Libraries :
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "http://localhost:5173", 
+  }
+});
 app.use(
     cors({
       origin: "http://localhost:5173", 
@@ -45,13 +50,13 @@ app.use('/api/message',messRoutes);
 
 //______Socket io handlers :
 
+
 io.on('connection', (socket) => {
-  // console.log('connected to socket.io');
+  console.log(`A user connected with socket ID ${socket.id}`);
   socket.on('setup', (userData) => {
-    console.log('here')
+    console.log('Received setup event with user data:', userData);
     socket.join(userData._id);
-    console.log(userData._id);
     socket.emit('connected');
+    console.log(`Emitted 'connected' event to socket ID ${socket.id}`);
   });
 });
-

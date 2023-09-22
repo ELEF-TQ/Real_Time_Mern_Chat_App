@@ -5,7 +5,6 @@ import { isLastMessage, isSameSender, isSameSenderMargin, isSameUser } from '../
 import { Avatar, Tooltip } from '@chakra-ui/react';
 
 const ScrollableChat = ({ messages }) => {
-  console.log("scrollbat", messages);
   const { user } = ChatState();
 
   const messagesArray = Array.isArray(messages) ? messages : [];
