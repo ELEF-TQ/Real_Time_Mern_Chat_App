@@ -49,14 +49,36 @@ app.use('/api/chat',chatRoutes);
 app.use('/api/message',messRoutes);
 
 //______Socket io handlers :
-
-
 io.on('connection', (socket) => {
-  console.log(`A user connected with socket ID ${socket.id}`);
+ 
+  //__SETUP :
   socket.on('setup', (userData) => {
-    console.log('Received setup event with user data:', userData);
     socket.join(userData._id);
-    socket.emit('connected');
-    console.log(`Emitted 'connected' event to socket ID ${socket.id}`);
   });
+ 
+  //__JOIN :
+  socket.on("join chat", (room) => {
+    socket.join(room);
+    console.log('user joind :' + room)
+  });
+
+  //__MESSAGE :
+  socket.on('new message', (newMessageReceived) => {
+    var chat = newMessageReceived.chat;
+    chat.users.forEach(user => {
+      if (user === newMessageReceived.sender._id) return;
+      socket.in(user).emit('message received', newMessageReceived);
+    });
+  });
+
+  //__TYPING :
+  socket.on('typing', (room)=> {socket.in(room).emit('typing')});
+  socket.on('stop typing', (room)=> {socket.in(room).emit('stop typing')});
+
+  //__OFF :
+  socket.off('setup',()=> {
+    console.log('USER DISCONNECTED');
+    socket.leave(userData._id);
+  })
+
 });
