@@ -42,8 +42,8 @@ function SideDrawer() {
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const { user } = ChatState();
+  
   const { chat , setChat , chats , setChats , notification , setNotification} = ChatState();
 
   const absoluteImagePath = user && user.picture
@@ -111,17 +111,28 @@ function SideDrawer() {
             <NotificationBadge count={notification.length} effect={Effect.SCALE}/>
               <BellIcon fontSize="2xl" m={1} />
             </MenuButton>
-            <MenuList pl={2} >
-              {!notification.length && "no new messages"}
-              {notification.map(notif=> {
-                <MenuItem key={notif._id}  onClick={()=> {
-                  setChat(notif.chat)
-                  setNotification(notification.filter((n) => n!== notif))
-                }}>
-                 {notif.chat.isGroupChat ? `new message in ${notif.chat.chatName}` : `mew message from ${getSender(user,notif.chat.users)}`}
-                </MenuItem>
-              })}
+            <MenuList pl={2}>
+              
+              {notification.length === 0 ? (
+                <MenuItem>{"no new messages"}</MenuItem>
+              ) : (
+                notification.map((notif) => (
+                  <MenuItem
+                    key={notif._id}
+                    onClick={() => {
+                      setChat(notif.chat);
+                      setNotification(notification.filter((n) => n !== notif));
+                    }}
+                  >
+                    {console.log(notif.chat.users)}
+                    {notif.chat.isGroupChat
+                      ? `new message in ${notif.chat.chatName}`
+                      : `new message from ${getSender(user, notif.chat.users)}`}
+                  </MenuItem>
+                ))
+              )}
             </MenuList>
+
           </Menu>
           <Menu>
             <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>

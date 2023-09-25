@@ -119,9 +119,6 @@ const RenameGroup = async (req, res, next) => {
   }
 };
 
-module.exports = RenameGroup;
-
-
 //_________ RemoveFromGroup : 
 const RemoveFromGroup = asyncHandler(async(req,res)=> {
   const {chatId ,userId} = req.body;

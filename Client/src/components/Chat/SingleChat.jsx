@@ -51,6 +51,7 @@ const SingleChat = ({ setFetchAgain,fetchAgain}) => {
           content : newMessage ,
           chatId : chat._id
         })
+        console.log('DATA', data);
         socket.emit('new message', data);
         setMessages([...messages , data]);
       } catch (error) {
@@ -114,6 +115,7 @@ const SingleChat = ({ setFetchAgain,fetchAgain}) => {
         if(!notification.includes(newMessageReceived)){
           setNotification([...notification,newMessageReceived]);
           setFetchAgain(!fetchAgain);
+          console.log('notif seted')
         }
       } else {
         setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
