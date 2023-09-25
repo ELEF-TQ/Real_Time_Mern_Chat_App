@@ -10,7 +10,6 @@ import { ChatState } from "../../context/ChatProvider";
 import api from "../../api";
 const MyChats = ({ fetchAgain }) => {
 
-  const [loggedUser, setLoggedUser] = useState();
   const { chat, setChat, user, chats, setChats } = ChatState();
 
   const toast = useToast();
@@ -25,7 +24,6 @@ const MyChats = ({ fetchAgain }) => {
   };
 
   useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
   }, [fetchAgain]);
 
@@ -86,7 +84,7 @@ const MyChats = ({ fetchAgain }) => {
             >
               <Text fontSize='20px' >
                 {!c.isGroupChat
-                  ? getSender(loggedUser, c.users)
+                  ? getSender(user, c.users)
                   : c.chatName}
               </Text>
             </Box>
