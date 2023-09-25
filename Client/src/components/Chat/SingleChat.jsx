@@ -16,7 +16,7 @@ var socket , selectedChatCompare;
 
 
 const SingleChat = ({ setFetchAgain,fetchAgain}) => {
-  const {user , chat , setChat} = ChatState()
+  const {user , chat , setChat , notification , setNotification} = ChatState()
 
   const toast = useToast();
   const [messages , setMessages] = useState([]);
@@ -78,7 +78,6 @@ const SingleChat = ({ setFetchAgain,fetchAgain}) => {
   },[chat]);
 
 
-  
   //____TypingFunction :
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
@@ -106,23 +105,21 @@ const SingleChat = ({ setFetchAgain,fetchAgain}) => {
       preserveAspectRatio: 'xMidYMid slice'
     }
   };
-  
- 
+  console.log(notification)
+
   //____MessageReceived :
   useEffect(() => {
     const messageReceivedHandler = (newMessageReceived) => {
-      console.log('Received a new message:', newMessageReceived);
-
       if (!chat || selectedChatCompare._id !== newMessageReceived.chat._id) {
-        console.log('Notification condition met');
+        if(!notification.includes(newMessageReceived)){
+          setNotification([...notification,newMessageReceived]);
+          setFetchAgain(!fetchAgain);
+        }
       } else {
-        console.log('Message added to messages');
         setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
       }
     };
-
     socket.on('message received', messageReceivedHandler);
-
     return () => {
       socket.off('message received', messageReceivedHandler);
     };

@@ -30,6 +30,10 @@ import { useToast } from "@chakra-ui/react";
 import api from "../../api";
 import ChatLoading from '../Chat/ChatLoading'
 import UserListItem from '../User/UserListItem'
+import { getSender } from "../../config/ChatLogics";
+import NotificationBadge from 'react-notification-badge';
+import {Effect} from 'react-notification-badge';
+
 function SideDrawer() {
   const navigate = useNavigate();
   const toast = useToast();
@@ -40,7 +44,7 @@ function SideDrawer() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { user } = ChatState();
-  const { chat , setChat , chats , setChats } = ChatState();
+  const { chat , setChat , chats , setChats , notification , setNotification} = ChatState();
 
   const absoluteImagePath = user && user.picture
     ? new URL(user.picture, import.meta.url).href
@@ -104,8 +108,20 @@ function SideDrawer() {
         <div>
           <Menu>
             <MenuButton p={1}>
+            <NotificationBadge count={notification.length} effect={Effect.SCALE}/>
               <BellIcon fontSize="2xl" m={1} />
             </MenuButton>
+            <MenuList pl={2} >
+              {!notification.length && "no new messages"}
+              {notification.map(notif=> {
+                <MenuItem key={notif._id}  onClick={()=> {
+                  setChat(notif.chat)
+                  setNotification(notification.filter((n) => n!== notif))
+                }}>
+                 {notif.chat.isGroupChat ? `new message in ${notif.chat.chatName}` : `mew message from ${getSender(user,notif.chat.users)}`}
+                </MenuItem>
+              })}
+            </MenuList>
           </Menu>
           <Menu>
             <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
