@@ -1,68 +1,61 @@
 const express = require('express');
-const { data } = require('./data/data');
+const path = require('path');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const errorHandler = require('./middlewares/errorHandler');
 require('dotenv').config();
-const server = require('http').createServer(app); 
-
-//______Libraries :
+const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
   cors: {
-    origin: "http://localhost:5173", 
+    origin: "http://localhost:5173",
   }
 });
-app.use(
-    cors({
-      origin: "http://localhost:5173", 
-      credentials: true, 
-    })
-  );
-  
+
+// Middlewares
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+}));
 app.use(express.json());
 app.use(errorHandler);
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//______importing routes :
+// Importing routes
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const messRoutes = require('./routes/messRoutes');
 
-
-//______Database connection :
+// Database connection
 const connectDB = require('./config/ConnectDB');
-const { log } = require('console');
 connectDB().then(() => {
-  server.listen(5000, () => {
-      console.log('Server is listening on port 5000');
-  });
+  // Start the server when the database is connected
+  startServer();
 }).catch((e) => {
   console.log(e);
 });
 
-//______Routes Handlers :
-app.use('/api',authRoutes);
-app.use('/api/user',userRoutes);
-app.use('/api/chat',chatRoutes);
-app.use('/api/message',messRoutes);
+// Routes Handlers
+app.use('/api', authRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/message', messRoutes);
 
-//______Socket io handlers :
+// Socket io handlers
 io.on('connection', (socket) => {
- 
-  //__SETUP :
+  // Setup
   socket.on('setup', (userData) => {
     socket.join(userData._id);
   });
- 
-  //__JOIN :
+
+  // Join
   socket.on("join chat", (room) => {
     socket.join(room);
-    console.log('user joind :' + room)
+    console.log('user joined: ' + room);
   });
 
-  //__MESSAGE :
+  // Message
   socket.on('new message', (newMessageReceived) => {
     var chat = newMessageReceived.chat;
     chat.users.forEach(user => {
@@ -71,14 +64,32 @@ io.on('connection', (socket) => {
     });
   });
 
-  //__TYPING :
-  socket.on('typing', (room)=> {socket.in(room).emit('typing')});
-  socket.on('stop typing', (room)=> {socket.in(room).emit('stop typing')});
+  // Typing
+  socket.on('typing', (room) => {
+    socket.in(room).emit('typing');
+  });
+  socket.on('stop typing', (room) => {
+    socket.in(room).emit('stop typing');
+  });
 
-  //__OFF :
-  socket.off('setup',()=> {
+  // Disconnect
+  socket.on('disconnect', () => {
     console.log('USER DISCONNECTED');
-    socket.leave(userData._id);
-  })
-
+  });
 });
+
+function startServer() {
+  if (process.env.NODE_ENV === 'production') {
+    // Serve static files and handle production-specific settings
+    const __dirname1 = path.resolve('..');
+    app.use(express.static(path.join(__dirname1, '/Client/dist')));
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname1, 'Client', 'dist', 'index.html'));
+    });
+  }
+
+  // Start the Express server
+  server.listen(5000, () => {
+    console.log('Server is listening on port 5000');
+  });
+}

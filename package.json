@@ -1,0 +1,14 @@
+{
+  "name": "mern_chat_app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node Server/server.js",
+    "server": "nodemon Server/server.js",
+    "build": "npm install --legacy-peer-deps && npm install --legacy-peer-deps --prefix Client && npm run build --prefix Client"
+  
+  },
+  "author": "",
+  "license": "ISC"
+}
