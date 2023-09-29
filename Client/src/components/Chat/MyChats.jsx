@@ -71,7 +71,7 @@ const MyChats = ({ fetchAgain }) => {
       >
         {chats ? (
           <Stack overflowY='scroll'>
-          {chats.map((c) => (
+          {chats?.map((c) => (
             <Box
             onClick={() => setChat(c)}
             cursor="pointer"
