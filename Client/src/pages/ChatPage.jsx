@@ -3,7 +3,7 @@ import { useState } from "react";
 import Chatbox from "../components/Chat/Chatbox";
 import MyChats from "../components/Chat/MyChats";
 import SideDrawer from "../components/extras/SideDrawer";
-import { ChatState } from "../context/ChatProvider";
+import { ChatState } from "../context";
 import '../App.css';
 import api, { registerTokenExpirationCallback } from "../api";
 import TokenExpirationModal from "../components/extras/TokenExpired";
