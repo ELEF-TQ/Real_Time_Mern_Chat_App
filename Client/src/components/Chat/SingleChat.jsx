@@ -1,5 +1,5 @@
 import { Flex , FormControl, IconButton, Input, Spinner, Text } from "@chakra-ui/react";
-import { ChatState } from "../../context/ChatProvider";
+import { ChatState } from "../../context";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import UpdateGroupChatModal from "../Modals/UpdateGroupChatModal";
 import { getSender ,getFullSender } from  "../../config/ChatLogics";
