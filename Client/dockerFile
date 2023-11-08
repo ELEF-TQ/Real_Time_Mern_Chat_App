@@ -1,0 +1,20 @@
+# Use an official Node.js runtime as a parent image
+FROM node:20
+
+# Set the working directory in the container
+WORKDIR /src
+
+# Copy package.json to the container
+COPY package.json ./
+
+# Install frontend dependencies
+RUN npm install
+
+# Copy the application code to the container
+COPY . ./
+
+# Expose the port that the React app will run on
+EXPOSE 3000
+
+# Command to start the React app
+CMD ["npm", "start"]
